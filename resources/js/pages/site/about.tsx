@@ -1,10 +1,10 @@
-import { Head } from '@inertiajs/react';
-import { Calendar, Crosshair, Eye, Globe2 } from 'lucide-react';
-import { useRef } from 'react';
-import { Eyebrow, IconBadge, Section } from '@/components/site/ui';
-import { useHeroEntrance, useScrollReveals } from '@/hooks/use-gsap';
-import { useArt } from '@/lib/artwork';
-import type { Metric, TextCard } from '@/lib/site';
+import { Head } from "@inertiajs/react";
+import { Calendar, Crosshair, Eye, Globe2 } from "lucide-react";
+import { useRef } from "react";
+import { Eyebrow, IconBadge, Section } from "@/components/site/ui";
+import { useHeroEntrance, useScrollReveals } from "@/hooks/use-gsap";
+import { useArt } from "@/lib/artwork";
+import type { Metric, TextCard } from "@/lib/site";
 
 interface AboutContent {
     hero?: {
@@ -28,6 +28,7 @@ export default function About({ content }: { content: AboutContent }) {
     const hero = content.hero ?? {};
     const art = useArt();
     const artwork = art(hero.art);
+    const flourish = art("line-waves");
 
     return (
         <div ref={scope}>
@@ -35,8 +36,27 @@ export default function About({ content }: { content: AboutContent }) {
 
             {/* Split intro */}
             <Section className="relative overflow-hidden py-16 lg:py-24">
-                <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
-                    <div className="min-w-0">
+                {artwork && (
+                    <div
+                        data-hero
+                        aria-hidden="true"
+                        className="absolute inset-0"
+                    >
+                        <img
+                            src={artwork.src}
+                            alt=""
+                            width={887}
+                            height={443}
+                            className="h-full w-full object-cover"
+                            fetchPriority="high"
+                        />
+                        <div className="absolute inset-0 bg-canvas/50" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-canvas via-canvas/50 to-canvas/10" />
+                    </div>
+                )}
+
+                <div className="relative z-10">
+                    <div className="min-w-0 max-w-xl">
                         {hero.eyebrow && (
                             <div data-hero>
                                 <Eyebrow>{hero.eyebrow}</Eyebrow>
@@ -59,18 +79,6 @@ export default function About({ content }: { content: AboutContent }) {
                             </p>
                         )}
                     </div>
-                    {artwork && (
-                        <div data-hero className="min-w-0">
-                            <img
-                                src={artwork.src}
-                                alt={artwork.alt}
-                                width={1024}
-                                height={1024}
-                                className="w-full object-cover"
-                                fetchPriority="high"
-                            />
-                        </div>
-                    )}
                 </div>
             </Section>
 
@@ -127,11 +135,22 @@ export default function About({ content }: { content: AboutContent }) {
             {/* Closing quote */}
             {content.quote && (
                 <Section className="relative overflow-hidden pb-24">
-                    <figure className="relative py-10 text-center">
-                        <div
-                            aria-hidden
-                            className="absolute inset-x-0 bottom-0 h-40 bg-[linear-gradient(115deg,transparent_40%,rgba(183,7,20,0.35)_45%,transparent_50%),linear-gradient(105deg,transparent_55%,rgba(227,25,42,0.25)_60%,transparent_65%),linear-gradient(125deg,transparent_30%,rgba(183,7,20,0.2)_35%,transparent_42%)]"
-                        />
+                    <div data-reveal-group>
+                        {flourish && (
+                            <img
+                                aria-hidden
+                                src={flourish.src}
+                                alt=""
+                                width={1024}
+                                height={238}
+                                className="absolute inset-x-0 bottom-0 h-32 w-full object-cover object-bottom md:h-40"
+                            />
+                        )}
+                    </div>
+                    <figure
+                        data-reveal-group
+                        className="py-10 pb-24 text-center"
+                    >
                         <blockquote className="relative mx-auto max-w-3xl font-display text-3xl leading-snug whitespace-pre-line text-ivory italic md:text-4xl">
                             <span aria-hidden className="text-crimson">
                                 “

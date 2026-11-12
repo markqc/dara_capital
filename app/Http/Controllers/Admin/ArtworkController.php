@@ -20,6 +20,7 @@ class ArtworkController extends Controller
     {
         return [
             'globe-market-chart' => 'Home hero',
+            'line-waves' => 'About quote flourish',
             'reception-lobby' => 'About hero',
             'red-architectural-facade' => 'Services hero',
             'earth-hemisphere' => 'Insights hero',

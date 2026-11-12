@@ -1,12 +1,13 @@
-import { usePage } from '@inertiajs/react';
-import aiBrain from '../../assets/artwork/ai-brain.png';
-import citySkyline from '../../assets/artwork/city-skyline.png';
-import earthHemisphere from '../../assets/artwork/earth-hemisphere.png';
-import fintechNetwork from '../../assets/artwork/fintech-network.png';
-import globeMarketChart from '../../assets/artwork/globe-market-chart.png';
-import receptionLobby from '../../assets/artwork/reception-lobby.png';
-import redArchitecturalFacade from '../../assets/artwork/red-architectural-facade.png';
-import worldMap from '../../assets/artwork/world-map.png';
+import { usePage } from "@inertiajs/react";
+import aiBrain from "../../assets/artwork/ai-brain.png";
+import citySkyline from "../../assets/artwork/city-skyline.png";
+import earthHemisphere from "../../assets/artwork/earth-hemisphere.png";
+import fintechNetwork from "../../assets/artwork/fintech-network.png";
+import globeMarketChart from "../../assets/artwork/globe-market-chart.png";
+import lineWaves from "../../assets/artwork/line-waves.png";
+import receptionLobby from "../../assets/artwork/reception-lobby.png";
+import redArchitecturalFacade from "../../assets/artwork/red-architectural-facade.png";
+import worldMap from "../../assets/artwork/world-map.png";
 
 /**
  * Central artwork registry. Templates reference artwork by key so the
@@ -14,31 +15,35 @@ import worldMap from '../../assets/artwork/world-map.png';
  * artwork in one place.
  */
 export const artwork: Record<string, { src: string; alt: string }> = {
-    'ai-brain': { src: aiBrain, alt: 'Red glowing AI brain hologram' },
-    'city-skyline': { src: citySkyline, alt: 'Modern city skyline at dusk' },
-    'earth-hemisphere': {
+    "ai-brain": { src: aiBrain, alt: "Red glowing AI brain hologram" },
+    "city-skyline": { src: citySkyline, alt: "Modern city skyline at dusk" },
+    "earth-hemisphere": {
         src: earthHemisphere,
-        alt: 'Earth hemisphere with red illuminated networks',
+        alt: "Earth hemisphere with red illuminated networks",
     },
-    'fintech-network': {
+    "fintech-network": {
         src: fintechNetwork,
-        alt: 'Blue fintech network illustration',
+        alt: "Blue fintech network illustration",
     },
-    'globe-market-chart': {
+    "globe-market-chart": {
         src: globeMarketChart,
-        alt: 'Red wireframe globe over financial market charts',
+        alt: "Red wireframe globe over financial market charts",
     },
-    'reception-lobby': {
+    "line-waves": {
+        src: lineWaves,
+        alt: "Sweeping red and black line waves",
+    },
+    "reception-lobby": {
         src: receptionLobby,
-        alt: 'DARA Capital reception lobby with red accent lighting',
+        alt: "DARA Capital reception lobby with red accent lighting",
     },
-    'red-architectural-facade': {
+    "red-architectural-facade": {
         src: redArchitecturalFacade,
-        alt: 'Curved dark architecture with red facade lighting',
+        alt: "Curved dark architecture with red facade lighting",
     },
-    'world-map': {
+    "world-map": {
         src: worldMap,
-        alt: 'Crimson world map with network lights',
+        alt: "Crimson world map with network lights",
     },
 };
 
@@ -70,7 +75,7 @@ export function useArt() {
         if (override) {
             return {
                 src: override.src,
-                alt: override.alt || artwork[key]?.alt || '',
+                alt: override.alt || artwork[key]?.alt || "",
             };
         }
 
