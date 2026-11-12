@@ -33,13 +33,13 @@ export default function Login({ status }: Props) {
             <Head title="Sign in" />
 
             {/* Artwork panel */}
-            <div className="relative hidden overflow-hidden lg:block">
+            <div className="relative hidden overflow-hidden bg-black lg:block">
                 {artwork && (
                     <img
                         src={artwork.src}
                         alt=""
                         aria-hidden="true"
-                        className="absolute inset-0 h-full w-full object-cover"
+                        className="absolute inset-0 h-full w-full object-contain"
                     />
                 )}
                 <div data-hero className="absolute top-10 left-10">
