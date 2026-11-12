@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Lead extends Model
 {
+    public const STATUSES = ['new', 'contacted', 'qualified', 'archived'];
+
     protected $fillable = [
-        'name', 'email', 'company', 'industry', 'funding_range', 'message',
+        'name', 'email', 'company', 'industry', 'funding_range', 'message', 'status',
     ];
 }

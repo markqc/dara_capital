@@ -1,8 +1,11 @@
 <?php
 
+use App\Models\Artwork;
+use App\Models\Lead;
 use App\Models\Page;
 use App\Models\Post;
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
 beforeEach(fn () => $this->seed());
@@ -111,15 +114,15 @@ test('artwork upload validates file type and stores on the public disk', functio
 
     $this->actingAs($user)->post('/console/artwork/globe-market-chart', [
         'alt' => 'Custom globe',
-        'image' => \Illuminate\Http\UploadedFile::fake()->create('doc.pdf', 10, 'application/pdf'),
+        'image' => UploadedFile::fake()->create('doc.pdf', 10, 'application/pdf'),
     ])->assertSessionHasErrors('image');
 
     $this->actingAs($user)->post('/console/artwork/globe-market-chart', [
         'alt' => 'Custom globe',
-        'image' => \Illuminate\Http\UploadedFile::fake()->image('globe.png', 800, 600),
+        'image' => UploadedFile::fake()->image('globe.png', 800, 600),
     ])->assertSessionHasNoErrors();
 
-    $artwork = \App\Models\Artwork::where('key', 'globe-market-chart')->first();
+    $artwork = Artwork::where('key', 'globe-market-chart')->first();
     expect($artwork->alt)->toBe('Custom globe');
     Storage::disk('public')->assertExists($artwork->path);
 });
@@ -127,6 +130,84 @@ test('artwork upload validates file type and stores on the public disk', functio
 test('artwork routes reject non-admins', function () {
     $user = User::factory()->create(['is_admin' => false]);
     $this->actingAs($user)->get('/console/artwork')->assertForbidden();
+});
+
+test('admin can update a lead status', function () {
+    $lead = Lead::create([
+        'name' => 'Ada Founder',
+        'email' => 'ada@example.com',
+        'message' => 'Looking for Series A advisory.',
+    ]);
+
+    expect($lead->fresh()->status)->toBe('new');
+
+    $this->actingAs(admin())
+        ->patch("/console/leads/{$lead->id}", ['status' => 'qualified'])
+        ->assertRedirect()->assertSessionHasNoErrors();
+
+    expect($lead->fresh()->status)->toBe('qualified');
+});
+
+test('invalid lead status is rejected', function () {
+    $lead = Lead::create([
+        'name' => 'Ada Founder',
+        'email' => 'ada@example.com',
+        'message' => 'Looking for Series A advisory.',
+    ]);
+
+    $this->actingAs(admin())
+        ->patch("/console/leads/{$lead->id}", ['status' => 'bogus'])
+        ->assertSessionHasErrors('status');
+
+    expect($lead->fresh()->status)->toBe('new');
+});
+
+test('lead inbox can be filtered by status', function () {
+    Lead::create(['name' => 'New Lead', 'email' => 'new@example.com', 'message' => 'Hi']);
+    Lead::create(['name' => 'Old Lead', 'email' => 'old@example.com', 'message' => 'Hi', 'status' => 'archived']);
+
+    $this->actingAs(admin())
+        ->get('/console/leads?status=archived')
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->has('leads.data', 1)
+            ->where('leads.data.0.name', 'Old Lead')
+            ->where('filter', 'archived'));
+});
+
+test('admin can export leads as csv', function () {
+    Lead::create([
+        'name' => 'Ada Founder',
+        'email' => 'ada@example.com',
+        'company' => 'AdaCo',
+        'status' => 'contacted',
+        'message' => 'Looking for Series A advisory.',
+    ]);
+
+    $response = $this->actingAs(admin())->get('/console/leads/export');
+
+    $response->assertOk();
+    expect($response->headers->get('content-type'))->toContain('text/csv');
+    expect($response->headers->get('content-disposition'))->toContain('leads-');
+
+    $csv = $response->streamedContent();
+    expect($csv)->toContain('name,email,company');
+    expect($csv)->toContain('ada@example.com');
+    expect($csv)->toContain('contacted');
+});
+
+test('lead status and export routes reject non-admins', function () {
+    $lead = Lead::create([
+        'name' => 'Ada Founder',
+        'email' => 'ada@example.com',
+        'message' => 'Hi',
+    ]);
+
+    $this->get('/console/leads/export')->assertRedirect();
+
+    $user = User::factory()->create(['is_admin' => false]);
+    $this->actingAs($user)->patch("/console/leads/{$lead->id}", ['status' => 'archived'])->assertForbidden();
+    $this->actingAs($user)->get('/console/leads/export')->assertForbidden();
 });
 
 test('english title is required for a post', function () {
