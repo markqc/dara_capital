@@ -1,8 +1,9 @@
-import { Link, usePage } from '@inertiajs/react';
-import { ArrowRight, Menu, X } from 'lucide-react';
-import { useState } from 'react';
-import { SiteLogo } from '@/components/site/logo';
-import { NAV_PATHS, useSite } from '@/lib/site';
+import { Link, usePage } from "@inertiajs/react";
+import { ArrowRight, Menu, X } from "lucide-react";
+import { useState } from "react";
+import { LocaleSwitcher } from "@/components/site/locale-switcher";
+import { SiteLogo } from "@/components/site/logo";
+import { NAV_PATHS, useSite } from "@/lib/site";
 
 export function SiteHeader() {
     const { shared, url } = useSite();
@@ -10,14 +11,14 @@ export function SiteHeader() {
     const [open, setOpen] = useState(false);
 
     const labels = shared.nav ?? [];
-    const currentPath = currentUrl.split('?')[0];
+    const currentPath = currentUrl.split("?")[0];
 
     const nav = NAV_PATHS.map((path, i) => ({
         label: labels[i] ?? path,
         href: url(path),
         active:
             currentPath === url(path) ||
-            (path === '' && currentPath === url('')),
+            (path === "" && currentPath === url("")),
     }));
 
     return (
@@ -38,12 +39,12 @@ export function SiteHeader() {
                                 <Link
                                     href={item.href}
                                     aria-current={
-                                        item.active ? 'page' : undefined
+                                        item.active ? "page" : undefined
                                     }
                                     className={`relative text-sm transition-colors focus-visible:outline-2 focus-visible:outline-crimson ${
                                         item.active
-                                            ? 'text-ivory after:absolute after:-bottom-2 after:left-0 after:h-0.5 after:w-full after:bg-crimson'
-                                            : 'text-fog hover:text-ivory'
+                                            ? "text-ivory after:absolute after:-bottom-2 after:left-0 after:h-0.5 after:w-full after:bg-crimson"
+                                            : "text-fog hover:text-ivory"
                                     }`}
                                 >
                                     {item.label}
@@ -54,11 +55,14 @@ export function SiteHeader() {
                 </nav>
 
                 <div className="flex items-center gap-4">
+                    <div className="hidden sm:block">
+                        <LocaleSwitcher />
+                    </div>
                     <Link
-                        href={url('contact')}
+                        href={url("contact")}
                         className="hidden items-center gap-2 bg-crimson-deep px-5 py-2.5 text-xs font-bold tracking-wider text-ivory uppercase transition-colors hover:bg-crimson focus-visible:outline-2 focus-visible:outline-ivory md:inline-flex"
                     >
-                        {shared.cta ?? 'Book Consultation'}
+                        {shared.cta ?? "Book Consultation"}
                         <ArrowRight className="size-3.5" aria-hidden />
                     </Link>
                     <button
@@ -90,13 +94,13 @@ export function SiteHeader() {
                                 <Link
                                     href={item.href}
                                     aria-current={
-                                        item.active ? 'page' : undefined
+                                        item.active ? "page" : undefined
                                     }
                                     onClick={() => setOpen(false)}
                                     className={`block py-2.5 text-base ${
                                         item.active
-                                            ? 'text-crimson'
-                                            : 'text-ivory hover:text-crimson'
+                                            ? "text-crimson"
+                                            : "text-ivory hover:text-crimson"
                                     }`}
                                 >
                                     {item.label}
@@ -105,13 +109,16 @@ export function SiteHeader() {
                         ))}
                         <li className="pt-3">
                             <Link
-                                href={url('contact')}
+                                href={url("contact")}
                                 onClick={() => setOpen(false)}
                                 className="inline-flex items-center gap-2 bg-crimson-deep px-5 py-2.5 text-xs font-bold tracking-wider text-ivory uppercase"
                             >
-                                {shared.cta ?? 'Book Consultation'}
+                                {shared.cta ?? "Book Consultation"}
                                 <ArrowRight className="size-3.5" aria-hidden />
                             </Link>
+                        </li>
+                        <li className="pt-3">
+                            <LocaleSwitcher />
                         </li>
                     </ul>
                 </nav>

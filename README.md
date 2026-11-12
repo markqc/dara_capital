@@ -50,8 +50,8 @@ php artisan db:seed
 php artisan storage:link   # serves editor-uploaded artwork
 ```
 
-Editor access is configured through the `DARA_EDITOR_*` variables in
-`.env` before seeding — see `.env.example`. Public registration is
+The editor account is provisioned by `php artisan db:seed` — see
+`database/seeders/DatabaseSeeder.php`. Public registration is
 disabled.
 
 ## Development

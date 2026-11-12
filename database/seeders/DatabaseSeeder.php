@@ -15,21 +15,11 @@ class DatabaseSeeder extends Seeder
 
     public function run(): void
     {
-        $email = env('DARA_EDITOR_EMAIL', 'editor@daracapital.test');
-        $password = env('DARA_EDITOR_PASSWORD');
-
-        if (! $password) {
-            $password = 'password';
-            $this->command?->warn(
-                'DARA_EDITOR_PASSWORD is not set, seeding the editor with the insecure local default "password". Set it in .env before deploying anywhere real.'
-            );
-        }
-
         User::updateOrCreate(
-            ['email' => $email],
+            ['email' => 'mark@m-caneda.com'],
             [
-                'name' => 'DARA Editor',
-                'password' => Hash::make($password),
+                'name' => 'Mark Caneda',
+                'password' => Hash::make('!Password1234'),
                 'email_verified_at' => now(),
                 'is_admin' => true,
             ],
