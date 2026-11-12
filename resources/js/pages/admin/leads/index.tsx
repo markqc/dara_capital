@@ -1,7 +1,9 @@
-import { Head, Link, useForm } from '@inertiajs/react';
-import { Trash2 } from 'lucide-react';
+import { Head, Link, router, useForm } from '@inertiajs/react';
+import { Download, Trash2 } from 'lucide-react';
 import Heading from '@/components/heading';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface Lead {
     id: number;
@@ -10,6 +12,7 @@ interface Lead {
     company: string | null;
     industry: string | null;
     funding_range: string | null;
+    status: string;
     message: string;
     created_at: string;
 }
@@ -19,17 +22,78 @@ interface Paginated<T> {
     links: { url: string | null; label: string; active: boolean }[];
 }
 
-export default function LeadsIndex({ leads }: { leads: Paginated<Lead> }) {
+const STATUS_STYLES: Record<string, string> = {
+    new: 'border-transparent bg-blue-600 text-white',
+    contacted: 'border-transparent bg-amber-500 text-white',
+    qualified: 'border-transparent bg-green-600 text-white',
+    archived: '',
+};
+
+export default function LeadsIndex({
+    leads,
+    statuses,
+    filter,
+}: {
+    leads: Paginated<Lead>;
+    statuses: string[];
+    filter: string | null;
+}) {
     const deleteForm = useForm({});
+
+    const setStatus = (lead: Lead, status: string) => {
+        router.patch(
+            `/console/leads/${lead.id}`,
+            { status },
+            { preserveScroll: true },
+        );
+    };
 
     return (
         <>
             <Head title="Lead inbox" />
             <div className="flex flex-1 flex-col gap-6 p-6">
-                <Heading
-                    title="Lead inbox"
-                    description="Consultation requests submitted through the public contact form"
-                />
+                <div className="flex items-start justify-between gap-4">
+                    <Heading
+                        title="Lead inbox"
+                        description="Consultation requests submitted through the public contact form"
+                    />
+                    <Button variant="outline" asChild>
+                        <a href="/console/leads/export">
+                            <Download className="size-4" />
+                            Export CSV
+                        </a>
+                    </Button>
+                </div>
+
+                <nav
+                    className="flex flex-wrap gap-2"
+                    aria-label="Filter by status"
+                >
+                    <Button
+                        variant={filter === null ? 'default' : 'ghost'}
+                        size="sm"
+                        asChild
+                    >
+                        <Link href="/console/leads" preserveScroll>
+                            All
+                        </Link>
+                    </Button>
+                    {statuses.map((status) => (
+                        <Button
+                            key={status}
+                            variant={filter === status ? 'default' : 'ghost'}
+                            size="sm"
+                            asChild
+                        >
+                            <Link
+                                href={`/console/leads?status=${status}`}
+                                preserveScroll
+                            >
+                                {status}
+                            </Link>
+                        </Button>
+                    ))}
+                </nav>
 
                 {leads.data.length === 0 ? (
                     <p className="rounded-xl border border-sidebar-border/70 p-8 text-center text-sm text-muted-foreground dark:border-sidebar-border">
@@ -44,9 +108,20 @@ export default function LeadsIndex({ leads }: { leads: Paginated<Lead> }) {
                             >
                                 <div className="flex items-start justify-between gap-4">
                                     <div>
-                                        <p className="font-medium">
-                                            {lead.name}
-                                        </p>
+                                        <div className="flex items-center gap-2">
+                                            <p className="font-medium">
+                                                {lead.name}
+                                            </p>
+                                            <Badge
+                                                className={cn(
+                                                    'capitalize',
+                                                    STATUS_STYLES[lead.status],
+                                                )}
+                                                variant="outline"
+                                            >
+                                                {lead.status}
+                                            </Badge>
+                                        </div>
                                         <p className="text-sm text-muted-foreground">
                                             {lead.email}
                                             {lead.company
@@ -55,6 +130,29 @@ export default function LeadsIndex({ leads }: { leads: Paginated<Lead> }) {
                                         </p>
                                     </div>
                                     <div className="flex items-center gap-3">
+                                        <label
+                                            className="sr-only"
+                                            htmlFor={`status-${lead.id}`}
+                                        >
+                                            Status
+                                        </label>
+                                        <select
+                                            id={`status-${lead.id}`}
+                                            value={lead.status}
+                                            onChange={(e) =>
+                                                setStatus(lead, e.target.value)
+                                            }
+                                            className="rounded-md border border-input bg-background px-2 py-1 text-xs capitalize"
+                                        >
+                                            {statuses.map((status) => (
+                                                <option
+                                                    key={status}
+                                                    value={status}
+                                                >
+                                                    {status}
+                                                </option>
+                                            ))}
+                                        </select>
                                         <time className="text-xs text-muted-foreground">
                                             {new Date(
                                                 lead.created_at,

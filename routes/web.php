@@ -45,6 +45,8 @@ Route::middleware(['auth', 'verified', EnsureUserIsAdmin::class])
 
         Route::resource('posts', PostController::class)->except(['show']);
         Route::get('leads', [LeadInboxController::class, 'index'])->name('leads.index');
+        Route::get('leads/export', [LeadInboxController::class, 'export'])->name('leads.export');
+        Route::patch('leads/{lead}', [LeadInboxController::class, 'update'])->name('leads.update');
         Route::delete('leads/{lead}', [LeadInboxController::class, 'destroy'])->name('leads.destroy');
     });
 
