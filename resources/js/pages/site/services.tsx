@@ -1,4 +1,4 @@
-import { Head } from '@inertiajs/react';
+import { Head } from "@inertiajs/react";
 import {
     ArrowRight,
     BarChart3,
@@ -9,12 +9,12 @@ import {
     Handshake,
     Landmark,
     Target,
-} from 'lucide-react';
-import { useRef, useState } from 'react';
-import { CtaLink, Eyebrow, IconBadge, Section } from '@/components/site/ui';
-import { useHeroEntrance, useScrollReveals } from '@/hooks/use-gsap';
-import { useArt } from '@/lib/artwork';
-import { type TextCard, useSite } from '@/lib/site';
+} from "lucide-react";
+import { useRef, useState } from "react";
+import { CtaLink, Eyebrow, IconBadge, Section } from "@/components/site/ui";
+import { useHeroEntrance, useScrollReveals } from "@/hooks/use-gsap";
+import { useArt } from "@/lib/artwork";
+import { type TextCard, useSite } from "@/lib/site";
 
 interface ServicesContent {
     hero?: {
@@ -67,8 +67,27 @@ export default function Services({
             <Head title={hero.heading} />
 
             <Section className="relative overflow-hidden py-16 lg:py-24">
-                <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
-                    <div className="min-w-0">
+                {artwork && (
+                    <div
+                        data-hero
+                        aria-hidden="true"
+                        className="absolute inset-0"
+                    >
+                        <img
+                            src={artwork.src}
+                            alt=""
+                            width={887}
+                            height={444}
+                            className="h-full w-full object-cover"
+                            fetchPriority="high"
+                        />
+                        <div className="absolute inset-0 bg-canvas/50" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-canvas via-canvas/50 to-canvas/10" />
+                    </div>
+                )}
+
+                <div className="relative z-10">
+                    <div className="min-w-0 max-w-xl">
                         {hero.eyebrow && (
                             <div data-hero>
                                 <Eyebrow>{hero.eyebrow}</Eyebrow>
@@ -91,18 +110,6 @@ export default function Services({
                             </p>
                         )}
                     </div>
-                    {artwork && (
-                        <div data-hero className="min-w-0">
-                            <img
-                                src={artwork.src}
-                                alt={artwork.alt}
-                                width={1024}
-                                height={1024}
-                                className="w-full object-cover"
-                                fetchPriority="high"
-                            />
-                        </div>
-                    )}
                 </div>
             </Section>
 
@@ -151,7 +158,7 @@ export default function Services({
                                         >
                                             {isOpen ? labels.less : labels.more}
                                             <ArrowRight
-                                                className={`size-3.5 transition-transform ${isOpen ? 'rotate-90' : ''}`}
+                                                className={`size-3.5 transition-transform ${isOpen ? "rotate-90" : ""}`}
                                                 aria-hidden
                                             />
                                         </button>
@@ -187,7 +194,7 @@ export default function Services({
                         </div>
                     </div>
                     {cta.button && (
-                        <CtaLink href={url('contact')} className="shrink-0">
+                        <CtaLink href={url("contact")} className="shrink-0">
                             {cta.button}
                         </CtaLink>
                     )}
