@@ -1,4 +1,4 @@
-import { usePage } from '@inertiajs/react';
+import { usePage } from "@inertiajs/react";
 
 export type Metric = { value: string; label: string };
 export type TextCard = { title: string; body: string; details?: string };
@@ -29,12 +29,12 @@ export interface SharedContent {
  * paths stay fixed so links remain stable across locales.
  */
 export const NAV_PATHS = [
-    '',
-    'about',
-    'services',
-    'intelligence',
-    'insights',
-    'contact',
+    "",
+    "about",
+    "services",
+    "intelligence",
+    "insights",
+    "contact",
 ] as const;
 
 export function useSite() {
@@ -44,11 +44,12 @@ export function useSite() {
         shared: SharedContent;
     };
 
-    const url = (path: string = '') => `/${locale}${path ? `/${path}` : ''}`;
+    const url = (path: string = "") => `/${locale}${path ? `/${path}` : ""}`;
 
     return { locale, locales, shared, url };
 }
 
-export function localizedUrl(locale: string, path: string = '') {
-    return `/${locale}${path ? `/${path}` : ''}`;
+export function localizedUrl(locale: string, path: string = "") {
+    const normalized = path.replace(/^\/+/, "");
+    return `/${locale}${normalized ? `/${normalized}` : ""}`;
 }
