@@ -131,7 +131,11 @@ export default function Contact({
 
                         <ul className="mt-12 space-y-6">
                             {contactItems.map((item) => (
-                                <li key={item.label} className="flex gap-4">
+                                <li
+                                    key={item.label}
+                                    data-hero
+                                    className="flex gap-4"
+                                >
                                     <span
                                         aria-hidden
                                         className="flex size-10 shrink-0 items-center justify-center border border-line text-crimson"
